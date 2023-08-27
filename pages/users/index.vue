@@ -21,19 +21,19 @@
         </tr>
       </thead>
       <tbody>
-      <tr
-        v-for="(item, key) in data"
-        :key="key"
-      >
-        <td>{{ item.id }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.phone }}</td>
-        <td>{{ item.year_of_birth }}</td>
-        <td class="text-right">
-          <v-btn class="bg-primary mr-2">Edit</v-btn>
-          <v-btn class="bg-deep-orange">Delete</v-btn>
-        </td>
-      </tr>
+        <tr
+          v-for="(item, key) in store.getters['userList']"
+          :key="key"
+        >
+          <td>{{ item.id }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.phone }}</td>
+          <td>{{ item.year_of_birth }}</td>
+          <td class="text-right">
+            <v-btn class="bg-info mr-2" :to="`/users/edit/${item.id}`">Edit</v-btn>
+            <v-btn class="bg-deep-orange" @click.prevent="() => item.id && onDelete(item.id)">Delete</v-btn>
+          </td>
+        </tr>
       </tbody>
     </v-table>
   </v-container>
@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { useStore } from '~/stores'
-import {UserInterface} from "~/interfaces/modules/User.interface";
+import {UserEnum} from "~/stores/enums/user.enum";
 
 const store = useStore()
 
@@ -49,5 +49,10 @@ useHead({
   title: "List users",
 })
 
-let data: UserInterface[] = store.getters['userList']
+const onDelete = (id: number) => {
+  var result = confirm("Are you sure delete?");
+  if (result) {
+    store.dispatch(UserEnum.DELETE_USER, id);
+  }
+}
 </script>
